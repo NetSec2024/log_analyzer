@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid mt-5">
+        <h1 class="mb-4">Log Dashboard</h1>
+        <div class="mb-3">
+            <input type="text" id="sessionFilter" class="form-control" placeholder="Enter Session Number">
+            <button id="filterButton" class="btn btn-primary mt-2">Filter</button>
+        </div>
+        <div class="table-responsive">
+            <table id="logTable" class="table table-bordered log-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="min-width: 150px;">Session</th>
+                        <th style="min-width: 200px;">Timestamp</th>
+                        <th style="min-width: 150px;">Event ID</th>
+                        <th style="min-width: 150px;">Input</th>
+                        <th style="min-width: 200px;">Message</th>
+                        <th style="min-width: 150px;">Source IP</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    {% for entry in log_data %}
+                    <tr>
+                        <td class="session">{{ entry.session }}</td>
+                        <td>{{ entry.timestamp }}</td>
+                        <td>{{ entry.eventid }}</td>
+                        <td>{{ entry.input }}</td>
+                        <td>{{ entry.message }}</td>
+                        <td>{{ entry.src_ip }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById("filterButton").addEventListener("click", function() {
+            var sessionInput = document.getElementById("sessionFilter").value;
+            $.getJSON('/filter', { session: sessionInput }, function(data) {
+                var tableBody = document.getElementById("logTableBody");
+                tableBody.innerHTML = '';
+                data.forEach(function(log) {
+                    var row = `<tr>
+                        <td class="session">${ log.session }</td>
+                        <td>${ log.timestamp }</td>
+                        <td>${ log.eventid }</td>
+                        <td>${ log.input }</td>
+                        <td>${ log.message }</td>
+                        <td>${ log.src_ip }</td>
+                    </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

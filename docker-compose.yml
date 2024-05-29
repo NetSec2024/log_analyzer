@@ -1,0 +1,25 @@
+---
+version: '3'
+
+volumes:
+  cowrie-etc:
+  cowrie-var:
+
+services:
+  cowrie:
+    restart: always
+    image: local_cowrie
+    ports:
+      - "2222:2222"
+      - "2223:2223"
+    volumes:
+      - cowrie-etc:/cowrie/cowrie-git/etc
+      - cowrie-var:/cowrie/cowrie-git/var
+
+  logger:
+    restart: always
+    image: local_logger
+    ports:
+      - "5000:5000"
+    volumes:
+      - cowrie-var:/app/volume
