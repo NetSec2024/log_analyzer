@@ -17,7 +17,7 @@ def load_log_data():
                     continue
     except FileNotFoundError:
         print(f"Il file {file_path} non è stato trovato.")
-    return log_data
+    return log_data.reverse()
 
 def load_log_data_filtered(session_id):
     log_data = []
